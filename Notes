@@ -1,0 +1,145 @@
+# MySql
+mySQL
+
+1.sudo service mysql start
+	mysql -u root -p
+
+2.CREATE DATABASE databse_name;//新建数据库
+
+3.新建TABLE
+	CREATE TABLE table_name(
+	column_name1 data_type(data_length1),
+	column_name2 data_type(data_length2),...)
+	VALUES(value1,
+	value2,...);
+  删除表： DROP TABLE table_name;
+	
+	数据类型：DATE:YYYY-MM-DD 3字节
+		YEAR:YYYY	1字节
+		TIME: HH:MM:SS	3字节
+		VARCHAR： 可变字节长度 0~255
+		TEXT ：长文本数据 0-65536
+		ENUM和SET ：ENUM 类型的数据的值，必须是定义时枚举的值的其中之一，即单选，
+			而 SET 类型的值则可以多选
+	
+	
+4.(1).INSERT INTO table_name(colunm1,column2,...)
+	VALUES (data1,data2,...);//插入数据
+  (2)INSERT INTO table_name
+	VALUES (data1,data2,...);
+
+5.约束条件：主键 PRIMARY KEY: eg1：id INT(10)，
+				CONSTRAINT pk PRIMARY KEY(id)
+			     eg2:id INT(10),PRIMARY KEY
+		用于约束表中的一行，作为这一行的唯一标识符，
+		在一张表中通过主键就能准确定位到一行。
+		复合组键：多列约束	CONSTRAINT pk PRIMARY KEY(id,name)	
+	   默认值 DEAFULT: id INT(10) DEFAULT '123';
+		INSERT语句中，如果被 DEFAULT 约束的位置没有值，
+		那么这个位置将会被 DEFAULT 的值填充。
+	  唯一 UNIQUE:指定列的值不能有重复值，即这一列的每个值都是唯一的。
+			eg:id INT(10),UNIQUE(id)
+	  外键 FOREIGN KEY: 能确保数据的完整性，也能表现表之间的关系。
+			    一个表可以有多个外键，每个外键必须REFERENCES(参考)另一
+			    个表的组件，被外键约束的列，取值必须在它参考的列中的对应值。
+	  非空 NOT NULL:该列不能为空 eg:id INT(10) NOT NULL
+
+6.SELECT 语句：SELECT column_name1,column_name2 FROM table_name WHERE 限制条件;
+
+7.选择表的所有内容 SELECT * FROM table_name;
+	
+8.限制条件	WHERE AND,OR,BETWEEN ..AND.. >,<,= ,IN/NOT IN
+
+9.通配符 LIKE 与通配符一起使用，通配符代表未知字符。SQL通配符是 _ 和%。
+	_ 代表一个字符
+	eg1：SELECT phone FROM employee WHERE phone LIKE '1769809____';
+	%是不定长度通配符	
+	eg2：SELECT name FROM employee WHERE name LIKE 'Ja%';
+
+10.中文支持 ALTER TABLE table_name convert to character set utf8;
+
+11.对结果排序 ORDER BY, ASC升序 ,DESC降序
+	eg:SELECT name,salary,age FROM employee ORDER BY salary DESC;
+	//选择name，age，salary 并按salary 降序排列。
+
+12.SQL 内置函数	:COUNT 计数
+		SUM 求和
+		AVG 求平均值
+		MAX 最大值
+		MIN 最小值
+	这些函数对SELECT的结果做操作。
+	其中COUNT 可以用于任何数据类型。
+	SUM、AVG只能对数字类型做计算。
+	MAX、MIN可用于数值、字符串或是日期时间数据类型。
+	eg：计算salary的最大、最小值：
+		SELECT MAX(salary) AS max_salary,MIN(salary)FROM employee;
+
+13.子查询 eg：SELECT of_dpt,COUNT(proj_name) AS count_project FROM project
+	      WHERE of_dpt IN
+	      (SELECT in_dpt FROM employee WHERE name='Tom');
+
+14.连接查询      在处理多个表的时候，子查询只有在结果来自一个表的时候才有用。
+		但如果需要显示多个表或多个表中的数据，这时就必须使用连接（join）操作。
+		连接的基本思想是把两个或多个表当做一个新的表来操作。
+		eg:
+		SELECT id,name,people_num
+		FROM employee,department
+		WHERE employee.in_dpt = department.dpt_name
+		ORDER BY id;
+		另一个连接语句格式是使用JOIN ON 语法，刚才的语法等同于
+		eg2：
+		SELECT id,name,people_num
+		FROM employee JOIN department
+		ON employee.in_dpt = department.dpt_name
+		ORDER BY id;
+
+15.增加一列 ：ALTER TABLE 表名字 ADD COLUMN 列名字 data_type 约束;
+	或 ALTER TABLE 表名字 ADD 列名字 数据类型 约束;
+	默认添加到最后一列。
+	ALTER TABLE 表名字 ADD COLUMN 列名字 data_type 约束 AFTER 列1；
+	表示添加到列1的后面。
+	ALTER TABLE 表名字 ADD COLUMN 列名字 data_type 约束 FIRST;
+	表示添加到第一列。
+
+16.删除一列：ALTER TABLE 表名字 DROP COLUMN 列名字;
+	或 ALTER TABLE 表名字 DROP 列名字；
+
+17.重命名一列：ALTER TABLE 表名字 CHANGE 原列名 新列名 数据类型 约束;
+	如果原列名跟新列名相同则可用来修改数据类型。
+
+18.修改数据类型 除了上面的还可以使用以下语句：
+	ALTER TABLE 表名字 MODIFY 列名字 新数据类型;
+
+19.修改表中的某个值：
+	UPDATE 表名字 SET 列1=值1，列2=值2 WHERE 条件；
+
+20.删除一行 ：DELETE FROM 表名字 WHERE 条件；
+
+21 索引 索引相当于目录
+	ALTER TABLE 表名字 ADD INDEX 索引名 （列名）;
+	或 ALTER TABLE 索引名 ON 表名字 （列名）;
+	索引的效果是加快查询速度。
+	SHOW INDEX FROM 表名字; 查看索引。
+
+22.视图 视图是从一个或多个表中导出来的表，是一种虚拟存在的表。
+	它就像一个窗口，通过这个窗口可以看到系统专门提供的数据，
+	这样，用户可以不用看到整个数据库中的数据，而只关心对自
+	己有用的数据。
+	视图是虚拟的表：	
+   	 数据库中只存放了视图的定义，而没有存放视图中的数据，这些数据存放在原来的表中；
+   	 使用视图查询数据时，数据库系统会从原来的表中取出对应的数据；
+  	 视图中的数据依赖于原来表中的数据，一旦表中数据发生改变，
+	 	显示在视图中的数据也会发生改变；
+  	 在使用视图的时候，可以把它当作一张表。
+	创建视图的语句格式为：
+	CREATE VIEW 视图名(列a，列b，列c) AS SELECT 列1，列2，列3 FROM 表名字;
+
+23.导入 导入操作可以吧一个文件里的数据保存进一张表。
+	导入语句格式为：LOAD DATA INFILE '文件路径' INTO TABLE 表名字；
+
+24.导出 导出是把数据库某个表中的数据保存到一个文件之中。
+	到处语句基本格式为：SELECT 列1，列2 INTO OUTFILE '文件路径和文件名' FROM 表名字；
+25.备份 mysqldump -u root 数据库名>备份文件名；//备份整个数据库
+	mysqldump -u root 数据库名 表名字>备份文件名;//备份整个表
+	
+
